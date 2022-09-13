@@ -1,6 +1,7 @@
 package com.example.project.controller;
 
-import com.example.project.model.Criteria;
+import com.example.project.mapper.CriteriaMapper;
+import com.example.project.rest.Criteria;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import com.example.project.service.CriteriaService;
@@ -15,22 +16,24 @@ import java.util.List;
 
 public class CriteriaController {
     private CriteriaService criteriaService ;
-
+    private CriteriaMapper criteriaMapper;
     @GetMapping("/criterias")
-    public List<Criteria> getListCriteria(@RequestParam(name = "pageNumber") int page,
-                                            @RequestParam(name = "pageSize") int pageSize){
-        return criteriaService.getCriteriaList(page,pageSize);
+    public List<com.example.project.rest.Criteria> getListCriteria(@RequestParam(name = "pageNumber") int page,
+                                                                   @RequestParam(name = "pageSize") int pageSize){
+        return criteriaService.getCriteriaList(page, pageSize)
+                .stream()
+                .map(criteriaMapper::toRest).toList();
     }
 
     @GetMapping("/criteria/{id_criteria}")
-    public Criteria getCriteriaById(@PathVariable Long id_criteria){
-        return criteriaService.getCriteriaById(id_criteria) ;
+    public com.example.project.rest.Criteria getCriteriaById(@PathVariable Long id_criteria){
+        return criteriaMapper.toRest(criteriaService.getCriteriaById(id_criteria)) ;
     }
 
     @Transactional
-    @PostMapping("/criteria")
-    public Criteria createCriteria(@RequestBody Criteria criteria){
-        return criteriaService.addingCriteria(criteria) ;
+    @PostMapping("/criterias")
+    public com.example.project.rest.Criteria createCriteria(@RequestBody com.example.project.rest.Criteria criteria){
+        return criteriaMapper.toRest(criteriaService.addingCriteria(criteriaMapper.toDomain(criteria))) ;
     }
 
     @DeleteMapping("/criteria/{id_criteria}")
@@ -40,7 +43,7 @@ public class CriteriaController {
 
     @Transactional
     @PutMapping("/criteria/{id_criteria}")
-    public Criteria upateOrcreateCriteria(@PathVariable Long id_criteria , @RequestBody Criteria criteria){
-        return criteriaService.putCriteria(id_criteria , criteria) ;
+    public com.example.project.rest.Criteria upateOrcreateCriteria(@PathVariable Long id_criteria , @RequestBody Criteria criteria){
+        return criteriaMapper.toRest(criteriaService.putCriteria(id_criteria , criteriaMapper.toDomain(criteria)));
     }
 }

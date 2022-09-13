@@ -1,11 +1,13 @@
 package com.example.project.controller;
 
-import com.example.project.model.Applicant;
+import com.example.project.mapper.ApplicantMapper;
+import com.example.project.rest.Applicant;
 import com.example.project.service.ApplicantService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @RestController
@@ -13,21 +15,21 @@ import java.util.List;
 
 public class ApplicantController {
     private ApplicantService applicantService ;
-
+    private ApplicantMapper applicantMapper;
     @GetMapping("/applicants")
-    public List<Applicant> getAllApplicants (@RequestParam(name = "page") int page ,
-                                             @RequestParam(name = "pageSize") int pageSize) {
-        return applicantService.getApplicantList(page , pageSize) ;
+    public List<com.example.project.model.Applicant> getAllApplicants (@RequestParam(name = "page") int page ,
+                                                                       @RequestParam(name = "pageSize") int pageSize) {
+        return applicantService.getApplicantList(page, pageSize);
     }
 
     @PostMapping("/applicants/create")
-    public Applicant createApplicant(@RequestBody Applicant applicant){
-        return applicantService.createApplicant(applicant) ;
+    public com.example.project.model.Applicant createApplicant(@RequestBody com.example.project.rest.Applicant applicant){
+        return applicantMapper.toDomain(applicantMapper.toRest(applicantService.createApplicant(applicantMapper.toDomain(applicant)))) ;
     }
 
-    @PutMapping("/applicants/update")
-    public Applicant updateApplicant(@RequestBody Applicant applicant){
-        return applicantService.updateApplicant(applicant) ;
+    @PutMapping("/applicants/update/{id_applicant}")
+    public com.example.project.model.Applicant updateApplicant(@RequestBody Applicant applicant , @PathVariable int id_applicant){
+        return applicantMapper.toDomain(applicantMapper.toRest(applicantService.updateApplicant(applicantMapper.toDomain(applicant)))) ;
     }
 
     @DeleteMapping("/delete/applicants/{id}")

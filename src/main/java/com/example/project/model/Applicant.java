@@ -16,6 +16,7 @@ import java.util.List;
 @ToString
 @EqualsAndHashCode
 @Entity
+@Builder
 
 public class Applicant {
     @Id
@@ -30,9 +31,8 @@ public class Applicant {
     private String degree ;
     @Past
     private Instant birthdate;
-    @NotBlank(message = "you have to complete this case")
-    private String lastAverage;
+    private double lastAverage;
     @ManyToMany
-    @JoinColumn(name = "id_scholarsip")
-    private List<Scholarship> scholasrhip ;
+    private List<Scholarship> scholarship ;
+    private String status;
 }

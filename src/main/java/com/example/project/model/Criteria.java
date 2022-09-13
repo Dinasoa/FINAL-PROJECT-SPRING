@@ -14,7 +14,7 @@ import java.util.List;
 @ToString
 @EqualsAndHashCode
 @Entity
-
+@Builder
 public class Criteria implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -58,7 +58,7 @@ public class ScholarshipService {
         return scholarship  ;
     }
 
-    public Scholarship addingSchoalarship(Scholarship scholarship){
+    public Scholarship addingScholarship(Scholarship scholarship){
         List<Criteria> criteria =  scholarship.getCriteria() ;
         for (Criteria i : criteria) {
             if(!criteriaRepository.existsById(i.getIdCriteria()))
@@ -89,6 +89,7 @@ public class ScholarshipService {
                     scholarship1.setCriteria(scholarship.getCriteria());
                     scholarship1.setUniversity(scholarship.getUniversity());
                     scholarship1.setBenefits(scholarship.getBenefits());
+                    scholarship1.setMinimumAverage(scholarship.getMinimumAverage());
                     return scholarshipRepository.save(scholarship1) ;
                 })
                 .orElseGet(() -> {
@@ -104,5 +105,34 @@ public class ScholarshipService {
     public List<Scholarship> getScholarshipByCountry(String countryName){
         return scholarshipRepository.getScholarshipByCountry(countryName) ;
     }
+
+    public List<Integer> getScholarshipId(List<Scholarship> scholarship ){
+        List<Integer> listIds = new ArrayList<>() ;
+        for (int i = 0; i < scholarship.size(); i++) {
+            listIds.add( scholarship.get(i).getIdScholarship()) ;
+        }
+        return listIds ;
+    }
+
+    public List<Scholarship> findScholarshipByIds(List<Integer> ids){
+        List<Scholarship> scholarships = new ArrayList<>() ;
+
+        for (Integer i : ids) {
+            Scholarship scholarshipToBeAdded = scholarshipRepository.findById(i).get() ;
+            scholarships.add(scholarshipToBeAdded) ;
+        }
+
+        return scholarships;
+    }
+
+    public List<Double> findMinAverage(List<Scholarship> scholarships){
+        List<Double> minAVG = new ArrayList<>() ;
+        for (Scholarship scholarship : scholarships) {
+            Scholarship sc = scholarshipRepository.findById(scholarship.getIdScholarship()).get() ;
+            minAVG.add(sc.getMinimumAverage()) ;
+        }
+        return minAVG;
+    }
+
 
 }

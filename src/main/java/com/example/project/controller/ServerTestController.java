@@ -12,4 +12,9 @@ public class ServerTestController {
     public String ServerTest(){
         return "pong" ;
     }
+
+    @GetMapping("/")
+    public String root(){
+        return "Hello World" ;
+    }
 }

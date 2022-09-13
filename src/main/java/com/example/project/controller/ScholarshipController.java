@@ -1,7 +1,9 @@
 package com.example.project.controller;
 
-import com.example.project.model.Criteria;
-import com.example.project.model.Scholarship;
+import com.example.project.mapper.CriteriaMapper;
+import com.example.project.mapper.ScholasrhipMapper;
+import com.example.project.rest.Criteria;
+import com.example.project.rest.Scholarship;
 import com.example.project.service.ScholarshipService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -15,18 +17,22 @@ import java.util.List;
 
 public class ScholarshipController {
     private ScholarshipService scholarshipService ;
+    private ScholasrhipMapper scholasrhipMapper;
 
+    private CriteriaMapper criteriaMapper;
     @GetMapping("/scholarships")
-    public List<Scholarship> getScholarship(@RequestParam(name = "pageNumber") int page,
-                                            @RequestParam(name = "pageSize") int pageSize){
-        return scholarshipService.getScholarship(page,pageSize);
+    public List<com.example.project.rest.Scholarship> getScholarship(@RequestParam(name = "pageNumber") int page,
+                                                                     @RequestParam(name = "pageSize") int pageSize){
+        return scholarshipService.getScholarship(page, pageSize)
+                .stream()
+                .map(scholasrhipMapper::toRest).toList();
     }
 
 
     @Transactional
     @PostMapping("/scholarships")
-    public Scholarship createNewScholarship(@RequestBody Scholarship scholarship){
-        return scholarshipService.addingSchoalarship(scholarship) ;
+    public com.example.project.rest.Scholarship createNewScholarship(@RequestBody com.example.project.rest.Scholarship scholarship){
+        return scholasrhipMapper.toRest(scholarshipService.addingScholarship(scholasrhipMapper.toDomain(scholarship))) ;
     }
 
     @DeleteMapping("/scholarships/{id_scholarship}")
@@ -36,40 +42,47 @@ public class ScholarshipController {
 
     @Transactional
     @PutMapping("/scholarships/{id_scholarship}")
-    public Scholarship updateORcreateScholarship(@PathVariable int id_scholarship ,@RequestBody Scholarship scholarship){
+    public com.example.project.model.Scholarship updateORcreateScholarship(@PathVariable int id_scholarship , @RequestBody com.example.project.model.Scholarship scholarship){
+//        return scholasrhipMapper.toRest(scholarshipService.putScholarship(id_scholarship , scholasrhipMapper.toDomain(scholarship))) ;
         return scholarshipService.putScholarship(id_scholarship , scholarship) ;
     }
 
     @Transactional
-    @PostMapping("/scholarships/postCriteriaInSchlarship/{id_scholarship}")
+    @PostMapping("/scholarships/postCriteriaInScholarship/{id_scholarship}")
     public Scholarship addingCriteriaInSCholarship(@PathVariable int id_scholarship , @RequestBody List<Criteria> criteria){
-        return scholarshipService.addingCriteriaInScholarship(criteria, id_scholarship);
+        return scholasrhipMapper.toRest(scholarshipService.addingCriteriaInScholarship(criteria.stream().map(criteriaMapper::toDomain).toList(), id_scholarship));
     }
 
     @DeleteMapping("/scholarship/{id_scholarship}/{id_criteria}")
-    public Scholarship removeCriteriaInScholarship(@PathVariable int id_scholarship ,
+    public String removeCriteriaInScholarship(@PathVariable int id_scholarship ,
                                                       @PathVariable Long id_criteria){
-        return scholarshipService.deleteCriteriaInScholarship(id_scholarship , id_criteria) ;
+         scholarshipService.deleteCriteriaInScholarship(id_scholarship , id_criteria) ;
+         return "deletedSuccessfull" ;
+
     }
 
     @GetMapping("/scholarships/univ")
-    public List<Scholarship> getScholarshipByUniversity(@RequestParam(name = "university_name") String name){
-        return scholarshipService.getScholarshipByUniversity(name) ;
+    public List<com.example.project.rest.Scholarship> getScholarshipByUniversity(@RequestParam(name = "university_name") String name){
+        return scholarshipService.getScholarshipByUniversity(name)
+                .stream().map(scholasrhipMapper::toRest)
+                .toList() ;
     }
 
     @GetMapping("/scholarships/country")
-    public List<Scholarship> getScholarshipByCountry(@RequestParam(name = "country_name") String countryName){
-        return scholarshipService.getScholarshipByCountry(countryName) ;
+    public List<com.example.project.rest.Scholarship> getScholarshipByCountry(@RequestParam(name = "country_name") String countryName){
+        return scholarshipService.getScholarshipByCountry(countryName)
+                .stream().map(scholasrhipMapper::toRest)
+                .toList();
     }
 
     @GetMapping("/scholarships/id")
-    public Scholarship getScholarshipById(@RequestParam(name = "id_scholarship") int id_scholasrhip){
-        return scholarshipService.getScholarshipById(id_scholasrhip) ;
+    public com.example.project.rest.Scholarship getScholarshipById(@RequestParam(name = "id_scholarship") int id_scholasrhip){
+        return scholasrhipMapper.toRest(scholarshipService.getScholarshipById(id_scholasrhip));
     }
 
-//    @DeleteMapping("/scholarships/{ids}")
-//    public String deleteMultipleScholarship(List<Integer> ids){
-//        return scholarshipService.multipleDelete(ids) ;
-//    }
+    @DeleteMapping("/scholarships/{ids}")
+    public String deleteMultipleScholarship(List<Integer> ids){
+        return scholarshipService.multipleDelete(ids) ;
+    }
 
 }

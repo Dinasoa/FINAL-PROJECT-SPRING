@@ -14,6 +14,7 @@ import java.util.List;
 @ToString
 @EqualsAndHashCode
 @Entity
+@Builder
 
 public class Scholarship implements Serializable {
     @Id
@@ -23,7 +24,7 @@ public class Scholarship implements Serializable {
     @Column(name = "scholarship_title")
     private String scholarshipTitle ;
 
-    @Column(name = "scholarshipDescription")
+    @Column(name = "scholarship_description")
     private String scholarshipDescription ;
 
     private String university  ;
@@ -31,15 +32,11 @@ public class Scholarship implements Serializable {
     private String degree;
 
     private String branch ;
-
     private String country ;
-
     private int amount ;
-
     private String benefits ;
-
     private Instant dateLimit ;
-
+    private double minimumAverage;
     @ManyToMany
     @JoinColumn(name = "id_criteria")
     private List<Criteria> criteria;
