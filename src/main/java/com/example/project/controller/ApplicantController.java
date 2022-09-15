@@ -19,9 +19,6 @@ public class ApplicantController {
     @GetMapping("/applicants")
     public List<com.example.project.model.Applicant> getAllApplicants (@RequestParam(name = "page") int page ,
                                                                        @RequestParam(name = "pageSize") int pageSize) {
-//        return applicantService.getApplicantList(page, pageSize)
-//                .stream()
-//                .map(applicantMapper::toRest).toList();
         return applicantService.getApplicantList(page , pageSize) ;
     }
 

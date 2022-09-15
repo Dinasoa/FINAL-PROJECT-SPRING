@@ -35,5 +35,6 @@ public class Applicant {
     private double lastAverage;
     @ManyToMany
     private List<Scholarship> scholarship ;
+//    @Column(columnDefinition = "varchar default PENDING")
     private String status;
 }

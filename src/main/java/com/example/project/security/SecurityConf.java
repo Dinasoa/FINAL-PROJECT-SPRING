@@ -18,12 +18,12 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 
 public class SecurityConf extends WebSecurityConfigurerAdapter {
 
-//    private CustomAuthenticationProvider authProvider;
-//
-//    @Override
-//    public void configure(AuthenticationManagerBuilder auth) throws Exception {
-//        auth.authenticationProvider(authProvider);
-//    }
+    private CustomAuthenticationProvider authProvider;
+
+    @Override
+    public void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.authenticationProvider(authProvider);
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
