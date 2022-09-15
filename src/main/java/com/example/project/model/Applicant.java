@@ -8,6 +8,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Past;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 
 @AllArgsConstructor
@@ -30,7 +31,7 @@ public class Applicant {
     private String email ;
     private String degree ;
     @Past
-    private Instant birthdate;
+    private LocalDate birthdate;
     private double lastAverage;
     @ManyToMany
     private List<Scholarship> scholarship ;

@@ -47,4 +47,14 @@ public class CriteriaService {
                     return criteriaRepository.save(criteria) ;
                 }) ;
     }
+
+    public List<Criteria> findCriteriaByIds(List<Long> idCriteria){
+        List<Criteria> listCriteria = new ArrayList<>() ;
+        for (Long id : idCriteria) {
+            Criteria criteria = criteriaRepository.findById(id).get() ;
+            listCriteria.add(criteria) ;
+        }
+        return listCriteria ;
+    }
+
 }

@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @RestController
-@CrossOrigin
+@CrossOrigin("*")
 
 public class ApplicantController {
     private ApplicantService applicantService ;
@@ -19,12 +19,15 @@ public class ApplicantController {
     @GetMapping("/applicants")
     public List<com.example.project.model.Applicant> getAllApplicants (@RequestParam(name = "page") int page ,
                                                                        @RequestParam(name = "pageSize") int pageSize) {
-        return applicantService.getApplicantList(page, pageSize);
+//        return applicantService.getApplicantList(page, pageSize)
+//                .stream()
+//                .map(applicantMapper::toRest).toList();
+        return applicantService.getApplicantList(page , pageSize) ;
     }
 
     @PostMapping("/applicants/create")
-    public com.example.project.model.Applicant createApplicant(@RequestBody com.example.project.rest.Applicant applicant){
-        return applicantMapper.toDomain(applicantMapper.toRest(applicantService.createApplicant(applicantMapper.toDomain(applicant)))) ;
+    public com.example.project.model.Applicant createApplicant(@RequestBody com.example.project.model.Applicant applicant){
+        return applicantService.createApplicant(applicant);
     }
 
     @PutMapping("/applicants/update/{id_applicant}")
@@ -37,4 +40,8 @@ public class ApplicantController {
         return applicantService.deleteApplicantById(id) ;
     }
 
+    @GetMapping("/applicants/status/{status}")
+    public List<com.example.project.model.Applicant> getApplicantByStatus(@PathVariable String status){
+        return applicantService.getListOfApplicantByStatus(status) ;
+    }
 }

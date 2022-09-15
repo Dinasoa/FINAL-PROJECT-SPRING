@@ -4,6 +4,7 @@ package com.example.project.rest;
 import lombok.*;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 
 @Getter
@@ -14,7 +15,7 @@ import java.util.List;
 
 public class Scholarship {
     private int id;
-    private String scholarhsipDescription;
+    private String scholarshipDescription;
     private String scholarshipTitle;
     private String university;
     private String degree;
@@ -22,7 +23,7 @@ public class Scholarship {
     private String country;
     private int amount ;
     private String benefits;
-    private Instant dateLimit;
+    private LocalDate dateLimit;
     private double minimumAverage;
-    private List<Criteria> criteria;
+    private List<Long> criteria;
 }

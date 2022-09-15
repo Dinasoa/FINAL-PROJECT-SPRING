@@ -2,6 +2,8 @@ package com.example.project.mapper;
 
 
 import com.example.project.model.Scholarship;
+import com.example.project.service.CriteriaService;
+import com.example.project.service.ScholarshipService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -10,10 +12,12 @@ import org.springframework.stereotype.Component;
 
 public class ScholasrhipMapper {
     private CriteriaMapper criteriaMapper;
+    private CriteriaService criteriaService ;
+    private ScholarshipService scholarshipService ;
     public Scholarship toDomain(com.example.project.rest.Scholarship rest){
        return Scholarship.builder()
                .idScholarship(rest.getId())
-               .scholarshipDescription(rest.getScholarhsipDescription())
+               .scholarshipDescription(rest.getScholarshipDescription())
                .amount(rest.getAmount())
                .benefits(rest.getBenefits())
                .branch(rest.getBranch())
@@ -23,14 +27,14 @@ public class ScholasrhipMapper {
                .university(rest.getUniversity())
                .scholarshipTitle(rest.getScholarshipTitle())
                .minimumAverage(rest.getMinimumAverage())
-               .criteria(rest.getCriteria().stream().map(criteriaMapper::toDomain).toList())
+               .criteria(criteriaService.findCriteriaByIds(rest.getCriteria()))
                .build();
     }
 
     public com.example.project.rest.Scholarship toRest(Scholarship domain){
         return com.example.project.rest.Scholarship.builder()
                 .id(domain.getIdScholarship())
-                .scholarhsipDescription(domain.getScholarshipDescription())
+                .scholarshipDescription(domain.getScholarshipDescription())
                 .amount(domain.getAmount())
                 .benefits(domain.getBenefits())
                 .branch(domain.getBranch())
@@ -40,7 +44,7 @@ public class ScholasrhipMapper {
                 .university(domain.getUniversity())
                 .scholarshipTitle(domain.getScholarshipTitle())
                 .minimumAverage(domain.getMinimumAverage())
-                .criteria(domain.getCriteria().stream().map(criteriaMapper::toRest).toList())
+                .criteria(scholarshipService.idsToCriteria(domain.getCriteria()))
                 .build();
     }
 }

@@ -12,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -30,28 +31,16 @@ public class ApplicantService {
 
 
     public Applicant createApplicant (Applicant applicant){
-//        if(applicant.getLastAverage() >= )
-//        Applicant app = new Applicant() ;
-//       List<Double> minAVG = scholarshipService.findMinAverage(applicant.getScholarship()) ;
-//        for (Double i : minAVG) {
-//            if(applicant.getLastAverage() >= i){
-//                app.setStatus("RETAINED");
-//                app.setFirstName(applicant.getFirstName());
-//                app.setLastName(applicant.getLastName());
-//                app.setEmail(applicant.getEmail());
-//                app.setDegree(applicant.getEmail());
-//                app.setBirthdate(applicant.getBirthdate());
-//                app.setLastAverage(applicant.getLastAverage());
-//                return applicantRepository.save(app) ;
-//            }
-//        }
-//        app.setStatus("REJECTED");
-//        app.setFirstName(applicant.getFirstName());
-//        app.setLastName(applicant.getLastName());
-//        app.setEmail(applicant.getEmail());
-//        app.setDegree(applicant.getEmail());
-//        app.setBirthdate(applicant.getBirthdate());
-//        app.setLastAverage(applicant.getLastAverage());
+        Double applicantAVG = applicant.getLastAverage()  ;
+        List<Scholarship> scholarships = applicant.getScholarship() ;
+        Applicant app = applicant;
+        for (Scholarship scholarship : scholarships) {
+           if (scholarship.getMinimumAverage() <= applicantAVG) {
+               app.setStatus("RETAINED");
+               return applicantRepository.save(app) ;
+           }
+        }
+        applicant.setStatus("REJECTED");
         return applicantRepository.save(applicant) ;
     }
 
@@ -69,6 +58,10 @@ public class ApplicantService {
     public String deleteApplicantById(int id){
          applicantRepository.deleteById(id);
          return "delete succcessfull";
+    }
+
+    public List<Applicant> getListOfApplicantByStatus (String status){
+        return applicantRepository.getApplicantByStatus(status) ;
     }
 
 

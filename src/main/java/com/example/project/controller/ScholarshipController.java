@@ -13,7 +13,7 @@ import java.util.List;
 
 @AllArgsConstructor
 @RestController
-@CrossOrigin
+@CrossOrigin("*")
 
 public class ScholarshipController {
     private ScholarshipService scholarshipService ;
@@ -21,18 +21,16 @@ public class ScholarshipController {
 
     private CriteriaMapper criteriaMapper;
     @GetMapping("/scholarships")
-    public List<com.example.project.rest.Scholarship> getScholarship(@RequestParam(name = "pageNumber") int page,
-                                                                     @RequestParam(name = "pageSize") int pageSize){
-        return scholarshipService.getScholarship(page, pageSize)
-                .stream()
-                .map(scholasrhipMapper::toRest).toList();
+    public List<com.example.project.model.Scholarship> getScholarship(@RequestParam(name = "pageNumber") int page,
+                                                                      @RequestParam(name = "pageSize") int pageSize){
+        return scholarshipService.getScholarship(page, pageSize);
     }
 
 
     @Transactional
     @PostMapping("/scholarships")
-    public com.example.project.rest.Scholarship createNewScholarship(@RequestBody com.example.project.rest.Scholarship scholarship){
-        return scholasrhipMapper.toRest(scholarshipService.addingScholarship(scholasrhipMapper.toDomain(scholarship))) ;
+    public com.example.project.model.Scholarship createNewScholarship(@RequestBody com.example.project.rest.Scholarship scholarship){
+        return scholarshipService.addingScholarship(scholasrhipMapper.toDomain(scholarship)) ;
     }
 
     @DeleteMapping("/scholarships/{id_scholarship}")
@@ -42,9 +40,9 @@ public class ScholarshipController {
 
     @Transactional
     @PutMapping("/scholarships/{id_scholarship}")
-    public com.example.project.model.Scholarship updateORcreateScholarship(@PathVariable int id_scholarship , @RequestBody com.example.project.model.Scholarship scholarship){
+    public com.example.project.model.Scholarship updateORcreateScholarship(@PathVariable int id_scholarship , @RequestBody Scholarship scholarship){
 //        return scholasrhipMapper.toRest(scholarshipService.putScholarship(id_scholarship , scholasrhipMapper.toDomain(scholarship))) ;
-        return scholarshipService.putScholarship(id_scholarship , scholarship) ;
+        return scholarshipService.putScholarship(id_scholarship , scholasrhipMapper.toDomain(scholarship)) ;
     }
 
     @Transactional
@@ -80,7 +78,7 @@ public class ScholarshipController {
         return scholasrhipMapper.toRest(scholarshipService.getScholarshipById(id_scholasrhip));
     }
 
-    @DeleteMapping("/scholarships/{ids}")
+    @DeleteMapping("/scholarships/multiples/{ids}")
     public String deleteMultipleScholarship(List<Integer> ids){
         return scholarshipService.multipleDelete(ids) ;
     }

@@ -20,8 +20,8 @@ public class ApplicantMapper {
                 .email(rest.getEmail())
                 .birthdate(rest.getBirthdate())
                 .lastAverage(rest.getLastAverage())
-                .status(rest.getStatus())
                 .degree(rest.getDegree())
+                .status(rest.getStatus())
                 .scholarship(scholarshipService.findScholarshipByIds(rest.getScholarshipIds()))
                 .build();
     }
@@ -34,8 +34,8 @@ public class ApplicantMapper {
                 .email(domain.getEmail())
                 .birthdate(domain.getBirthdate())
                 .lastAverage(domain.getLastAverage())
-                .status(domain.getStatus())
                 .degree(domain.getDegree())
+                .status(domain.getStatus())
                 .scholarshipIds(scholarshipService.getScholarshipId(domain.getScholarship()))
                 .build();
     }

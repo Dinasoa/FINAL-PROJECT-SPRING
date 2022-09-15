@@ -9,10 +9,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -27,7 +30,14 @@ public class ScholarshipService {
     CriteriaRepository criteriaRepository ;
 
     public List<Scholarship> getScholarship(int page, int pageSize) {
-        Pageable pageable = PageRequest.of(page - 1, pageSize);
+        Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by("dateLimit").ascending());
+//        List<Scholarship> scholarships = scholarshipRepository.findAll() ;
+//        LocalDate now = LocalDate.now() ;
+//        for (Scholarship scholarship : scholarships) {
+//            if(now.isAfter(scholarship.getDateLimit())) {
+//                scholarshipRepository.deleteById(scholarship.getIdScholarship());
+//            }
+//        }
         return scholarshipRepository.findAll(pageable).stream().toList();
     }
 
@@ -105,11 +115,11 @@ public class ScholarshipService {
     public List<Scholarship> getScholarshipByCountry(String countryName){
         return scholarshipRepository.getScholarshipByCountry(countryName) ;
     }
-
     public List<Integer> getScholarshipId(List<Scholarship> scholarship ){
         List<Integer> listIds = new ArrayList<>() ;
-        for (int i = 0; i < scholarship.size(); i++) {
-            listIds.add( scholarship.get(i).getIdScholarship()) ;
+        for (Scholarship scholarship1 : scholarship) {
+            if(scholarshipRepository.existsById(scholarship1.getIdScholarship()))
+                listIds.add(scholarship1.getIdScholarship()) ;
         }
         return listIds ;
     }
@@ -133,6 +143,16 @@ public class ScholarshipService {
         }
         return minAVG;
     }
+
+    public List<Long> idsToCriteria (List<Criteria> criterias){
+        List<Long> ids = new ArrayList<>() ;
+
+        for (Criteria criteria : criterias) {
+            ids.add(criteria.getIdCriteria()) ;
+        }
+        return ids ;
+    }
+
 
 
 }

@@ -5,6 +5,7 @@ import com.example.project.model.Scholarship;
 import lombok.*;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 
 @Getter
@@ -19,8 +20,8 @@ public class Applicant {
     private String lastName;
     private String email;
     private String degree;
-    private Instant birthdate;
+    private LocalDate birthdate;
     private double lastAverage;
     private List<Integer> scholarshipIds;
-    private String status;
+    private String status ;
 }

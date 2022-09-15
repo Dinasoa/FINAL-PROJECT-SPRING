@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
-  title: Bourse a l'etranger
-  description: Specification de mon API sur l'outil d'obtention de bourses a l'etranger
+  title: Get scholarship abroad
+  description: API Spec for getting scholarship abroad
   version: '1.0'
 
 servers:
@@ -13,28 +13,34 @@ tags:
 
   - name: Applicant
 paths:
-  /scholarship:
+  /scholarships:
     get:
       tags:
         - Scholarship
-      summary: get All Scholarship
-      operationId: getScholarship
-
+      summary: "Get list of scholarships filter by the date limit"
+      operationId: "getScholarship"
+      parameters:
+        - name: "pageNumber"
+          in: "query"
+          required: true
+          schema:
+            type: "integer"
+            format: "int32"
+        - name: "pageSize"
+          in: "query"
+          required: true
+          schema:
+            type: "integer"
+            format: "int32"
       responses:
-        '200':
-          description: successful operation
+        "200":
+          description: "OK"
           content:
-            application/json:
+            '*/*':
               schema:
                 type: array
                 items:
-                  $ref : "#/components/schemas/CreateScholarship"
-        '400':
-          description: error not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BadRequestException'
+                  $ref: "#/components/schemas/Scholarship"
     put:
       tags:
         - Scholarship
@@ -64,35 +70,6 @@ paths:
         '405':
           description: Validation exception
 
-    patch:
-      tags:
-        - Scholarship
-      operationId: updatePartiallyScholarship
-      summary: "Update existing scholarship"
-      description: "Update scholarship"
-
-      requestBody:
-        description: Scholarship to be updated
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateScholarship'
-
-      responses:
-        '200':
-          description: Ressource updated
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Scholarship'
-        '400':
-          description: Bad Request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BadRequestException'
     post:
       tags:
         - Scholarship
@@ -115,58 +92,53 @@ paths:
               schema:
                 $ref: '#/components/schemas/Scholarship'
 
-  /scholarship/{id_scholarship}/applicant:
+  /scholarships/univ:
     get:
       tags:
         - Scholarship
-      description: get students who applied for the specified scholarship_id
-      operationId: getAllApplicantToASpecifiedScholarship
+      summary: "Get scholarship by university name"
+      operationId: "getScholarshipByUniversity"
       parameters:
-        - name: id_scholarship
-          in: path
+        - name: "university_name"
+          in: "query"
           required: true
           schema:
-            type: string
-            default: available
-
+            type: "string"
       responses:
-        '200':
-          description: operation successful
+        "200":
+          description: "OK"
           content:
-            application/json:
+            '*/*':
               schema:
-                $ref: "#/components/schemas/ScholarshipApplicant"
-        '400':
-          description: bad request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BadRequestException'
-  /scholarship/{branch}:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Scholarship"
+        "400":
+            description: "Bad request"
 
+  /scholarships/country:
     get:
       tags:
         - Scholarship
-      description: get Scholarship by branch
-      operationId: getScholarshipByBranch
+      summary: "GET scholarships/country"
+      operationId: "getScholarshipByCountry"
       parameters:
-        - name: branch
-          in: path
+        - name: "country_name"
+          in: "query"
           required: true
           schema:
-            type: string
-            default: available
-
+            type: "string"
       responses:
-        '200':
-          description: operation successful
+        "200":
+          description: "OK"
           content:
-            application/json:
+            '*/*':
               schema:
-                $ref: "#/components/schemas/Scholarship"
-
-        '400':
-          description: bad request
+                type: array
+                items:
+                  $ref: "#/components/schemas/Scholarship"
+        "400":
+          description: "Bad request"
           content:
             application/json:
               schema:
@@ -193,54 +165,233 @@ paths:
         '404':
           description: Scholarship not found
 
-  /applicant:
-    post:
+  /criterias:
+    get:
       tags:
-        - Applicant
-      description: Student apply for a scholarship
-      operationId: postAppliant
+        - Criteria
+      summary: "Get all criteria"
+      operationId: "getListCriteria"
+      parameters:
+        - name: "pageNumber"
+          in: "query"
+          required: true
+          schema:
+            type: "integer"
+            format: "int32"
+        - name: "pageSize"
+          in: "query"
+          required: true
+          schema:
+            type: "integer"
+            format: "int32"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                    $ref: "#/components/schemas/Criteria"
+  /criteria/{id_criteria}:
+    get:
+      tags:
+        - Criteria
+      summary: "Get criteria by its identifier"
+      operationId: "getCriteriaById"
+      parameters:
+        - name: "id_criteria"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Criteria"
 
+    post:
+      summary: "Post criteria"
+      tags:
+        - Criteria
+      operationId: "createCriteria"
       requestBody:
-        description: Update an existent scholarship
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreateStudent'
+              $ref: "#/components/schemas/CreateCriteria"
         required: true
-
       responses:
-        '200':
-          description: student has successfully applied
+        "200":
+          description: "OK"
           content:
-            application/json:
+            '*/*':
               schema:
-                $ref: "#/components/schemas/ScholarshipApplicant"
-        '400':
-          description: bad request
+                $ref: "#/components/schemas/CreateCriteria"
+
+    delete:
+      summary: "DELETE criteria/{id_criteria}"
+      tags:
+        - Criteria
+      operationId: "deleteCriteria"
+      parameters:
+        - name: "id_criteria"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      responses:
+        "200":
+          description: "OK"
           content:
-            application/json:
+            '*/*':
               schema:
-                $ref: '#/components/schemas/BadRequestException'
+                type: "string"
+                example: "ressource deleted successfully"
+    put:
+      tags:
+        - Criteria
+      summary: "Put criteria"
+      operationId: "upateOrcreateCriteria"
+      parameters:
+        - name: "id_criteria"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: "object"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Criteria"
+
+  /applicants:
     get:
       tags:
         - Applicant
-      description: get all applicant
-      operationId: getAllApplicant
+      summary: "Get all applicants"
+      operationId: "getAllApplicants"
+      parameters:
+        - name: "page"
+          in: "query"
+          required: true
+          schema:
+            type: "integer"
+            format: "int32"
+        - name: "pageSize"
+          in: "query"
+          required: true
+          schema:
+            type: "integer"
+            format: "int32"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                 $ref: "#/components/schemas/Applicant"
 
+  /applicants/create:
+    post:
+      tags:
+        - Applicant
+      summary: "Create applicant"
+      operationId: "createApplicant"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: "object"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Applicant"
+  /applicants/update/{id_applicant}:
+    put:
+      tags:
+        - Applicant
+      summary: "PUT applicants/update/{id_applicant}"
+      operationId: "updateApplicant"
+      parameters:
+        - name: "id_applicant"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int32"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: "object"
+        required: true
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                  $ref: "#/components/schemas/Applicant"
+  /delete/applicants/{id}:
+    delete:
+      tags:
+        - Applicant
+      summary: "DELETE delete/applicants/{id}"
+      operationId: "deleteApplicantById"
+      parameters:
+        - name: "id"
+          in: "path"
+          required: true
+          schema:
+            type: "integer"
+            format: "int32"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+
+  /applicants/status/{status}:
+    get:
+      tags:
+        - Applicant
+      summary: get applicants by status
+      operationId: getApplicantsByStatus
+      parameters:
+        - name: status
+          required: true
+          in: path
       responses:
         '200':
-          description: get all applicant
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ScholarshipApplicant"
+            description: "list of students by status given"
+            content:
+              application/json:
+                schema:
+                  $ref: "#/components/schemas/Applicant"
 
-        '400':
-          description: bad request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BadRequestException'
 
 
 components:
@@ -316,49 +467,37 @@ components:
           type: integer
           example: 10
 
-    CreateStudent:
-      type: object
-      properties:
-        last_name:
-          type: string
-          example: "DOE"
+    CreateApplicant:
+        type: object
+        properties:
+            lastName:
+                type: string
+                example: 'DOE'
+            firstName:
+                type: string
+                example: 'JOHN'
+            birthdate:
+                type: string
+                format: date-time
+            email:
+                type: string
+            degree:
+                type: string
+            lastAverage:
+                type: integer
+            status:
+                type: string
+            scholarshipIds:
+                type: array
 
-        first_name:
-          type: string
-          example: "John"
-
-        birthdate:
-          type: string
-          format: date-time
-          example: "1999/10/25"
-
-        id_scholarship:
-          type: integer
-          example: 1
-
-    Student:
-      type: object
-      properties:
-        id_student:
-          type: integer
-          format: int64
-          example: 1
-      allOf:
-        - $ref: "#/components/schemas/CreateStudent"
-
-    ScholarshipApplicant:
-      properties:
-        student:
-          type: array
-          items:
-            allOf:
-              - $ref: "#/components/schemas/Student"
-
-        scholarship:
-          type: array
-          items:
-            allOf:
-              - $ref: "#/components/schemas/Scholarship"
+    Applicant:
+        allOf:
+          - $ref: "#/components/schemas/CreateApplicant"
+        properties:
+          idApplicant:
+            type: integer
+          status:
+              type: string
 
 
     BadRequestException:
